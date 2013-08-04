@@ -6,13 +6,18 @@
 #include <iostream>
 #include <random>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
 using namespace std;
 
 class Box {
 public:
     double volume;
-    double fracDist; // fractional distance that the unit cube's vertices
-    // will be moved toward point
+    
+    // Fractional distance that the unit cube's vertices will be moved toward point
+    double fracDist;
+    
     vector <double> point;
     vector <double> lower;
     vector <double> upper;
@@ -25,9 +30,13 @@ public:
     // Generate random numbers
     void generateRandomNumbers(int dim);
     
-    // maybe some methods, such as:
-    // void input
-    // void output ???
+    // Output data
+    void outputData(ofstream & output, int dim);
+    
+    // Make line
+    string makeLine(vector <double> data, int dim);
+
+    // void input ???
 };
 
 #endif /* defined(__random__Box__) */
