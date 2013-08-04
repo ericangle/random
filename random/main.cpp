@@ -17,65 +17,12 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <random>
+#include "Box.h"
 using namespace std;
 
-string makeLine(vector <double> data, int dim) {
-    string line = "";
-    ostringstream strs;
-    string str;
-    for (int j = 0; j < dim; j++) {
-        strs.str("");
-        strs << data[j];
-        str = strs.str();
-        line += str + '\t';
-    }
-    return line;
-}
+string makeLine(vector <double> data, int dim);
 
 int main() {
-    
-    class Box {
-    public:
-        double volume;
-        double fracDist; // fractional distance that the unit cube's vertices
-                         // will be moved toward point
-        vector <double> point;
-        vector <double> lower;
-        vector <double> upper;
-        vector <double> randomInside[3];
-        vector <double> randomOutside;
-        
-        // Set Upper and lower indices
-        void setLowerUpper(int dim) {
-            for (int i = 0; i < dim; i++) {
-                lower.push_back(fracDist * point[i]);
-                upper.push_back(1.0 - fracDist * (1.0 - point[i]));
-                cout << "lower[" << i << "] = " << lower[i] << endl;
-                cout << "upper[" << i << "] = " << upper[i] << endl;
-            }
-        }
-        /*
-        void generateRandomNumbers(int dim) {
-            for (int i = 0; i < dim; i++) {
-                
-                
-                
-                
-                lower.push_back(fracDist * point[i]);
-                upper.push_back(1.0 - fracDist * (1.0 - point[i]));
-                cout << "lower[" << i << "] = " << lower[i] << endl;
-                cout << "upper[" << i << "] = " << upper[i] << endl;
-            }
-        }
-        */
-
-        // maybe some methods, such as:
-        // void input
-        // void random
-        // void output ???
-        
-    };
     
     int dim;            // number of spatial dimensions
     double invDim;      // 1/dim
@@ -126,7 +73,7 @@ int main() {
                     else {
                         cout << "ERROR: Point " << numBoxes << " has a volume that is not ";
                         cout << "greater than 0.0 and less than 1.0." << endl << endl;
-                        return 0;
+                        return 1;
                     }
                 }
                 else {
@@ -141,7 +88,7 @@ int main() {
                         cout << "ERROR: The " << coordCount << " coordinate of point ";
                         cout << numBoxes << " is not greater than or equal to 0.0 ";
                         cout << " and less than 1.0." << endl << endl;
-                        return 0;
+                        return 1;
                     }
                 }
                 coordCount++;
@@ -151,7 +98,7 @@ int main() {
             if (coordCount < dim) {
                 cout << "ERROR: Point " << numBoxes << " has " << coordCount << " coordinates ";
                 cout << "instead of " << dim << ".";
-                return 0;
+                return 1;
             }
             
             tempBox->point = tempPoint;
@@ -173,34 +120,7 @@ int main() {
     // TODO: Verify calculation of lower and upper vertices
     
     // 2B. GENERATE RANDOM NUMBERS
-    
-    //boxes[numBoxes].generateRandomNumbers(dim);
-
-    default_random_engine generator;
-    
-    double lowerBound, upperBound, randomNumber;
-    
-    for (int i = 0; i < numBoxes; i++) {
-        for (int j = 0; j < dim; j++) {
-            // 2BI. Generate 3 random points inside the box
-            lowerBound = boxes[i].lower[j];
-            upperBound = boxes[i].upper[j];
-            for (int k = 0; k < 3; k++) {
-                uniform_real_distribution<double> distribution(lowerBound, upperBound);
-                randomNumber = distribution(generator);
-                boxes[i].randomInside[k].push_back(randomNumber);
-            }
-            
-            // 2BII. Generate 1 random point inside the unit hypercube, and outside the box
-            uniform_real_distribution<double> distribution(0.0, 1.0 - (upperBound - lowerBound));
-            randomNumber = distribution(generator);
-            // If number is inside box, shift it
-            if (randomNumber > lowerBound) {
-                randomNumber += upperBound - lowerBound;
-            }
-            boxes[i].randomOutside.push_back(randomNumber);
-        }
-    }
+    boxes[numBoxes].generateRandomNumbers(dim);
     
     // TODO: Verify random numbers
     
@@ -218,4 +138,18 @@ int main() {
     
     return 0;
 }
+
+string makeLine(vector <double> data, int dim) {
+    string line = "";
+    ostringstream strs;
+    string str;
+    for (int j = 0; j < dim; j++) {
+        strs.str("");
+        strs << data[j];
+        str = strs.str();
+        line += str + '\t';
+    }
+    return line;
+}
+
 
