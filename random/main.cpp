@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <vector>
+#include <math.h>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -15,11 +16,11 @@ using namespace std;
 
 int main() {
     
-    // Class for boxes
     class Box {
     public:
         double volume;
-        double alpha; // re-name this.
+        double fracDist; // fractional distance that the unit cube's vertices
+                         // will be moved toward point
         vector <double> point;
         vector <double> lower;
         vector <double> upper;
@@ -29,27 +30,103 @@ int main() {
         // maybe some methods, such as:
         // void setLowerUpper()
         
-    } boxes;
+    };
     
-    int dim;           // number of spatial dimensions
-    int numBoxes = -1; // number of boxes, initialized to -1 because
-                       // the first line is dimension and not a point
-    double invDim;     // 1/dim
+    int dim;            // number of spatial dimensions
+    double invDim;      // 1/dim
     
+    vector <Box> boxes; // Box object for each box in text file
+
+    int numBoxes = -1;  // number of boxes, initialized to -1 because
+                        // the first line is dimension and not a point
+
     // 1. READ IN DATA
     
     // Note: would be nice to allow user to specify path and file name
     ifstream inputFile("/Users/angle/Desktop/GS/random/random/input.txt");
     string tempLine;
     
+    int coordCount;
+    
     while (getline(inputFile, tempLine, '\n')) {
+        // Read in dimension
         if (numBoxes == -1) {
             dim = atof(tempLine.c_str());
             invDim = 1.0/( (double) dim );
-            cout << "dimension = " << dim << endl;
         }
+        // Read in box data
         else {
-            cout << "point " << numBoxes << endl;
+            Box* tempBox = new Box;
+
+            vector <double> tempPoint;
+            double tempCoord;
+    
+            coordCount = -1; // initialized to -1 because first column is volume
+            
+            stringstream ss(tempLine);
+            string temp;
+            // will just ignore extra point coords
+            while (getline(ss, temp, '\t') && (coordCount < dim)) {
+                // Read in volume
+                if (coordCount == -1) {
+                    double tempVolume = atof(temp.c_str());
+                    // Think about inclusive versus exclusive
+                    if ((tempVolume > 0.0) && (tempVolume < 1.0)) {
+                        tempBox->volume = atof(temp.c_str());
+                        cout << tempBox->volume << endl;
+                        tempBox->fracDist = 1.0-pow(tempBox->volume,invDim);
+                    }
+                    // Error if volume is not in allowable range
+                    else {
+                        cout << "ERROR: Point " << numBoxes << " has a volume that is not ";
+                        cout << "greater than 0.0 and less than 1.0." << endl << endl;
+                        return 0;
+                    }
+                }
+                else {
+                    tempCoord = atof(temp.c_str());
+                    // Think about inclusive versus exclusive
+                    if ((tempCoord >= 0.0) && (tempCoord <= 1.0)) {
+                        tempPoint.push_back(tempCoord);
+                        cout << tempPoint[coordCount] << endl;
+                    }
+                    // Error if coordinate is not in allowable range
+                    else {
+                        cout << "ERROR: The " << coordCount << " coordinate of point ";
+                        cout << numBoxes << " is not greater than or equal to 0.0 ";
+                        cout << " and less than 1.0." << endl << endl;
+                        return 0;
+                    }
+                }
+                coordCount++;
+            }
+            
+            // Error if not enough coordinates for point
+            if (coordCount < dim) {
+                cout << "ERROR: Point " << numBoxes << " has " << coordCount << " coordinates ";
+                cout << "instead of " << dim << ".";
+                return 0;
+            }
+            
+            // put this in method of Box class ???
+            vector <double> tempLower, tempUpper;
+            for (int j = 0; j < dim; j++) {
+                tempLower.push_back(tempBox->fracDist * tempPoint[j]);
+                tempUpper.push_back(1.0 + tempBox->fracDist * (1.0 - tempPoint[j]));
+                cout << "tempLower[" << j << "] = " << tempLower[j] << endl;
+                cout << "tempUpper[" << j << "] = " << tempUpper[j] << endl;
+            }
+            
+            tempBox->point = tempPoint;
+            tempBox->lower = tempLower;
+            tempBox->upper = tempUpper;
+            
+            boxes.push_back(*tempBox);
+            
+            delete tempBox;
+            
+            // boxes[numBoxes].setLowerUpper() instead of above?;
+            
         }
         numBoxes++;
     }
@@ -58,13 +135,14 @@ int main() {
     if (numBoxes == -1) {
         cout << "Text file is empty or not readable." << endl;
     }
-    cout << "numBoxes = " << numBoxes;
     
     // 2a. CONSTRUCT BOXES
     
     // 2B. GENERATE RANDOM NUMBERS
     
     // 3. OUTPUT DATA TO TEXT FILE
+    
+    cout << " DONE ";
     
     return 0;
 }
