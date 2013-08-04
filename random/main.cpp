@@ -20,6 +20,19 @@
 #include <random>
 using namespace std;
 
+string makeLine(vector <double> data, int dim) {
+    string line = "";
+    ostringstream strs;
+    string str;
+    for (int j = 0; j < dim; j++) {
+        strs.str("");
+        strs << data[j];
+        str = strs.str();
+        line += str + '\t';
+    }
+    return line;
+}
+
 int main() {
     
     class Box {
@@ -35,6 +48,9 @@ int main() {
         
         // maybe some methods, such as:
         // void setLowerUpper()
+        // void input
+        // void random
+        // void output ???
         
     };
     
@@ -79,8 +95,9 @@ int main() {
                     // Think about inclusive versus exclusive
                     if ((tempVolume > 0.0) && (tempVolume < 1.0)) {
                         tempBox->volume = atof(temp.c_str());
-                        cout << tempBox->volume << endl;
-                        tempBox->fracDist = 1.0-pow(tempBox->volume,invDim);
+                        cout << "volume " << tempBox->volume << endl;
+                        tempBox->fracDist = 1.0 - pow(tempBox->volume,invDim);
+                        cout << "fracDist = " << tempBox->fracDist << endl;
                     }
                     // Error if volume is not in allowable range
                     else {
@@ -94,7 +111,7 @@ int main() {
                     // Think about inclusive versus exclusive
                     if ((tempCoord >= 0.0) && (tempCoord <= 1.0)) {
                         tempPoint.push_back(tempCoord);
-                        cout << tempPoint[coordCount] << endl;
+                        cout << "point " << tempPoint[coordCount] << endl;
                     }
                     // Error if coordinate is not in allowable range
                     else {
@@ -114,11 +131,13 @@ int main() {
                 return 0;
             }
             
+            // 2a. CONSTRUCT BOXES
+            
             // put this in method of Box class ???
             vector <double> tempLower, tempUpper;
             for (int j = 0; j < dim; j++) {
                 tempLower.push_back(tempBox->fracDist * tempPoint[j]);
-                tempUpper.push_back(1.0 + tempBox->fracDist * (1.0 - tempPoint[j]));
+                tempUpper.push_back(1.0 - tempBox->fracDist * (1.0 - tempPoint[j]));
                 cout << "tempLower[" << j << "] = " << tempLower[j] << endl;
                 cout << "tempUpper[" << j << "] = " << tempUpper[j] << endl;
             }
@@ -144,8 +163,6 @@ int main() {
     
     // TODO: Verify calculation of lower and upper vertices
     
-    // 2a. CONSTRUCT BOXES
-    
     // 2B. GENERATE RANDOM NUMBERS
 
     default_random_engine generator;
@@ -168,7 +185,7 @@ int main() {
             randomNumber = distribution(generator);
             // If number is inside box, shift it
             if (randomNumber > lowerBound) {
-                randomNumber = randomNumber + upperBound - lowerBound;
+                randomNumber += upperBound - lowerBound;
             }
             boxes[i].randomOutside.push_back(randomNumber);
         }
@@ -178,7 +195,18 @@ int main() {
     
     // 3. OUTPUT DATA TO TEXT FILE
     
-    cout << " DONE ";
+    // TODO: returning negative numbers?
+    
+    ofstream output;
+    output.open("/Users/angle/Desktop/GS/random/random/output.txt");
+    
+    for (int i = 0; i < numBoxes; i++) {
+        for (int j = 0; j < 3; j++) {
+            output << makeLine(boxes[i].randomInside[j], dim) << '\n';
+        }
+        output << makeLine(boxes[i].randomOutside, dim) << '\n';
+    }
+    output.close();
     
     return 0;
 }
