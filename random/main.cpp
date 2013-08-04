@@ -46,8 +46,31 @@ int main() {
         vector <double> randomInside[3];
         vector <double> randomOutside;
         
+        // Set Upper and lower indices
+        void setLowerUpper(int dim) {
+            for (int i = 0; i < dim; i++) {
+                lower.push_back(fracDist * point[i]);
+                upper.push_back(1.0 - fracDist * (1.0 - point[i]));
+                cout << "lower[" << i << "] = " << lower[i] << endl;
+                cout << "upper[" << i << "] = " << upper[i] << endl;
+            }
+        }
+        /*
+        void generateRandomNumbers(int dim) {
+            for (int i = 0; i < dim; i++) {
+                
+                
+                
+                
+                lower.push_back(fracDist * point[i]);
+                upper.push_back(1.0 - fracDist * (1.0 - point[i]));
+                cout << "lower[" << i << "] = " << lower[i] << endl;
+                cout << "upper[" << i << "] = " << upper[i] << endl;
+            }
+        }
+        */
+
         // maybe some methods, such as:
-        // void setLowerUpper()
         // void input
         // void random
         // void output ???
@@ -131,26 +154,12 @@ int main() {
                 return 0;
             }
             
-            // 2a. CONSTRUCT BOXES
-            
-            // put this in method of Box class ???
-            vector <double> tempLower, tempUpper;
-            for (int j = 0; j < dim; j++) {
-                tempLower.push_back(tempBox->fracDist * tempPoint[j]);
-                tempUpper.push_back(1.0 - tempBox->fracDist * (1.0 - tempPoint[j]));
-                cout << "tempLower[" << j << "] = " << tempLower[j] << endl;
-                cout << "tempUpper[" << j << "] = " << tempUpper[j] << endl;
-            }
-            
             tempBox->point = tempPoint;
-            tempBox->lower = tempLower;
-            tempBox->upper = tempUpper;
-            
             boxes.push_back(*tempBox);
-            
             delete tempBox;
             
-            // boxes[numBoxes].setLowerUpper() instead of above?;
+            // 2a. CONSTRUCT BOXES     
+            boxes[numBoxes].setLowerUpper(dim);
             
         }
         numBoxes++;
@@ -164,6 +173,8 @@ int main() {
     // TODO: Verify calculation of lower and upper vertices
     
     // 2B. GENERATE RANDOM NUMBERS
+    
+    //boxes[numBoxes].generateRandomNumbers(dim);
 
     default_random_engine generator;
     
@@ -195,11 +206,8 @@ int main() {
     
     // 3. OUTPUT DATA TO TEXT FILE
     
-    // TODO: returning negative numbers?
-    
     ofstream output;
     output.open("/Users/angle/Desktop/GS/random/random/output.txt");
-    
     for (int i = 0; i < numBoxes; i++) {
         for (int j = 0; j < 3; j++) {
             output << makeLine(boxes[i].randomInside[j], dim) << '\n';
