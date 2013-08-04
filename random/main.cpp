@@ -1,8 +1,13 @@
 /*  Problem statement:
- 1. From a text file, read in the dimension of the space, and a series of points, each with a corresponding volume.
+ 1. From a text file, read in the dimension of the space, and a series of
+    points, each with a corresponding volume.
  2. For each point:
- a. Construct a hypercube "box" around the point with the specifed volume, such that each vertex of the unit hypercube is moved the same fractional distance to the point.
- b. Generate 3 random points inside the box, and 1 inside the unit hypercube, and outside the box.
+    a. Construct a hypercube "box" around the point with the specifed
+       volume, such that each vertex of the unit hypercube is moved
+       the same fractional distance to the point.
+    b. Generate:
+       I.  3 random points inside the box.
+       II. 1 random point inside the unit hypercube, and outside the box.
  3. Output the coordinates of all generated points to a text file.
  */
 
@@ -12,6 +17,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <random>
 using namespace std;
 
 int main() {
@@ -136,9 +142,39 @@ int main() {
         cout << "Text file is empty or not readable." << endl;
     }
     
+    // TODO: Verify calculation of lower and upper vertices
+    
     // 2a. CONSTRUCT BOXES
     
     // 2B. GENERATE RANDOM NUMBERS
+
+    default_random_engine generator;
+    
+    double lowerBound, upperBound, randomNumber;
+    
+    for (int i = 0; i < numBoxes; i++) {
+        for (int j = 0; j < dim; j++) {
+            // 2BI. Generate 3 random points inside the box
+            lowerBound = boxes[i].lower[j];
+            upperBound = boxes[i].upper[j];
+            for (int k = 0; k < 3; k++) {
+                uniform_real_distribution<double> distribution(lowerBound, upperBound);
+                randomNumber = distribution(generator);
+                boxes[i].randomInside[k].push_back(randomNumber);
+            }
+            
+            // 2BII. Generate 1 random point inside the unit hypercube, and outside the box
+            uniform_real_distribution<double> distribution(0.0, 1.0 - (upperBound - lowerBound));
+            randomNumber = distribution(generator);
+            // If number is inside box, shift it
+            if (randomNumber > lowerBound) {
+                randomNumber = randomNumber + upperBound - lowerBound;
+            }
+            boxes[i].randomOutside.push_back(randomNumber);
+        }
+    }
+    
+    // TODO: Verify random numbers
     
     // 3. OUTPUT DATA TO TEXT FILE
     
