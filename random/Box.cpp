@@ -35,7 +35,7 @@ void Box::generateRandomNumbers(int dim) {
     }
 }
 
-void Box::outputData(ofstream & output, int dim, char delimit){
+void Box::outputData(ofstream& output, int dim, char delimit){
     // Output 3 points inside box
     for (int j = 0; j < 3; j++) {
         output << makeLine(randomInside[j], dim, delimit) << '\n';
@@ -44,7 +44,7 @@ void Box::outputData(ofstream & output, int dim, char delimit){
     output << makeLine(randomOutside, dim, delimit) << '\n';
 }
 
-string Box::makeLine(vector <double> data, int dim, char delimit) {
+string Box::makeLine(const vector <double>& data, int dim, char delimit) {
     string line = "";
     ostringstream strs;
     string str;

@@ -18,6 +18,8 @@
 #include "Box.h"
 using namespace std;
 
+int readInput(string inFilePath, vector <Box>& boxes, int& numBoxes, int& dim, double& invDim);
+
 int main() {
     string inFilePath = "/Users/angle/Desktop/GS/random/random/input.txt";
     string outFilePath = "/Users/angle/Desktop/GS/random/random/output.txt";
@@ -31,6 +33,33 @@ int main() {
                         // the first line is dimension and not a point
 
     /*** 1. Read in input data ***/
+    int error = 0;
+    error = readInput(inFilePath, boxes, numBoxes, dim, invDim);
+    if (error == 1) {
+        return 1;
+    }
+    
+    ofstream output;
+    char delimit = '\t';
+    output.open(outFilePath);
+
+    for (int i = 0; i < numBoxes; i++) {
+        /*** 2a. Construct boxes ***/
+        boxes[i].setLowerUpper(dim);
+        
+        /*** 2b. Generate random numbers ***/
+        boxes[i].generateRandomNumbers(dim);
+        
+        /*** 3. Output data ***/
+        boxes[i].outputData(output, dim, delimit);
+    }
+
+    output.close();
+    
+    return 0;
+}
+
+int readInput(string inFilePath, vector <Box>& boxes, int& numBoxes, int& dim, double& invDim) {
     
     ifstream inputFile(inFilePath);
     string tempLine;
@@ -58,7 +87,7 @@ int main() {
             double tempVolume;
             vector <double> tempPoint;
             double tempCoord;
-    
+            
             coordCount = -1; // initialized to -1 because first column is volume
             
             stringstream ss(tempLine);
@@ -90,7 +119,7 @@ int main() {
                     else {
                         cout << "ERROR: The " << coordCount << " coordinate of point ";
                         cout << numBoxes << " is not greater than or equal to 0.0 ";
-                        cout << " and less than 1.0." << endl << endl;
+                        cout << " and less than or equal to 1.0." << endl << endl;
                         return 1;
                     }
                 }
@@ -108,8 +137,6 @@ int main() {
             boxes.push_back(*tempBox);
             delete tempBox;
             
-            /*** 2a. Construct boxes ***/
-            boxes[numBoxes].setLowerUpper(dim);
         }
         numBoxes++;
     }
@@ -119,26 +146,11 @@ int main() {
         cout << "ERROR: No points were specified." << endl;
         return 1;
     }
-
+    
     // Error if no data read in
     if (numBoxes == -1) {
         cout << "ERROR: Text file is empty or not readable." << endl;
         return 1;
     }
-    
-    /*** 2b. Generate random numbers ***/
-    for (int i = 0; i < numBoxes; i++) {
-        boxes[i].generateRandomNumbers(dim);
-    }
-    
-    /*** 3. Output data ***/
-    ofstream output;
-    char delimit = '\t';
-    output.open(outFilePath);
-    for (int i = 0; i < numBoxes; i++) {
-        boxes[i].outputData(output, dim, delimit);
-    }
-    output.close();
-    
     return 0;
 }

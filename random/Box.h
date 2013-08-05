@@ -32,10 +32,10 @@ public:
     void generateRandomNumbers(int dim);
     
     // Output data
-    void outputData(ofstream & output, int dim, char delimit);
+    void outputData(ofstream& output, int dim, char delimit);
     
     // Make line with elements of data
-    string makeLine(vector <double> data, int dim, char delimit);
+    string makeLine(const vector <double>& data, int dim, char delimit);
 };
 
 #endif /* defined(__random__Box__) */
