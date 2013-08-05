@@ -7,22 +7,21 @@
        II. 1 random point inside the unit hypercube, and outside the box.
  3. Output the coordinates of all generated points to a text file.
  
- Some assumptions made:
+ Some assumptions/simplifications made:
  1. The input text file will be in tab delimited form.
  2. Random numbers should be generated from a uniform distribution.
- 3. We have hard coded 2BI and 2BII to generate 3 and 1 points, respectively. If there is time, we could make this more generic.
+ 3. Volume is greater than 0 and less than 1.
+ 4. Have hard coded 2BI and 2BII to generate 3 and 1 points, respectively. Could make this more generic.
  */
 
-#include <iostream>
-#include <vector>
 #include <math.h>
-#include <fstream>
-#include <sstream>
-#include <string>
 #include "Box.h"
 using namespace std;
 
 int main() {
+    string inFilePath = "/Users/angle/Desktop/GS/random/random/input.txt";
+    string outFilePath = "/Users/angle/Desktop/GS/random/random/output.txt";
+    
     int dim;            // number of spatial dimensions
     double invDim;      // 1/dim
     
@@ -33,8 +32,7 @@ int main() {
 
     /*** 1. Read in input data ***/
     
-    // Note: would be nice to allow user to specify path and file name
-    ifstream inputFile("/Users/angle/Desktop/GS/random/random/input.txt");
+    ifstream inputFile(inFilePath);
     string tempLine;
     
     int coordCount;
@@ -42,8 +40,16 @@ int main() {
     while (getline(inputFile, tempLine, '\n')) {
         // Read in dimension
         if (numBoxes == -1) {
-            dim = atof(tempLine.c_str());
-            invDim = 1.0/( (double) dim );
+            double tempDim = atof(tempLine.c_str());
+            if (tempDim > 0) {
+                dim = tempDim;
+                invDim = 1.0/( (double) dim );
+            }
+            // Error if invalid dimension
+            else {
+                cout << "ERROR: Dimension must be greater than 0.";
+                return 1;
+            }
         }
         // Read in box data
         else {
@@ -63,12 +69,9 @@ int main() {
                 // Read in volume
                 if (coordCount == -1) {
                     tempVolume = atof(temp.c_str());
-                    // Note: think about inclusive versus exclusive
                     if ((tempVolume > 0.0) && (tempVolume < 1.0)) {
                         tempBox->volume = atof(temp.c_str());
-                        cout << "volume " << tempBox->volume << endl;
                         tempBox->fracDist = 1.0 - pow(tempBox->volume,invDim);
-                        cout << "fracDist = " << tempBox->fracDist << endl;
                     }
                     // Error if volume is not in allowable range
                     else {
@@ -80,10 +83,8 @@ int main() {
                 // Read in point
                 else {
                     tempCoord = atof(temp.c_str());
-                    // Note: think about inclusive versus exclusive
                     if ((tempCoord >= 0.0) && (tempCoord <= 1.0)) {
                         tempPoint.push_back(tempCoord);
-                        cout << "point " << tempPoint[coordCount] << endl;
                     }
                     // Error if coordinate is not in allowable range
                     else {
@@ -113,9 +114,16 @@ int main() {
         numBoxes++;
     }
     
-    // Note: would be nice to provide better error message
+    // Error if no points provided
+    if (numBoxes == 0) {
+        cout << "ERROR: No points were specified." << endl;
+        return 1;
+    }
+
+    // Error if no data read in
     if (numBoxes == -1) {
-        cout << "Text file is empty or not readable." << endl;
+        cout << "ERROR: Text file is empty or not readable." << endl;
+        return 1;
     }
     
     /*** 2b. Generate random numbers ***/
@@ -125,9 +133,10 @@ int main() {
     
     /*** 3. Output data ***/
     ofstream output;
-    output.open("/Users/angle/Desktop/GS/random/random/output.txt");
+    char delimit = '\t';
+    output.open(outFilePath);
     for (int i = 0; i < numBoxes; i++) {
-        boxes[i].outputData(output, dim);
+        boxes[i].outputData(output, dim, delimit);
     }
     output.close();
     

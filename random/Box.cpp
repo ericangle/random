@@ -1,4 +1,5 @@
 //  Box.cpp
+//  Class to represent boxes
 
 #include "Box.h"
 
@@ -6,13 +7,11 @@ void Box::setLowerUpper(int dim) {
     for (int i = 0; i < dim; i++) {
         lower.push_back(fracDist * point[i]);
         upper.push_back(1.0 - fracDist * (1.0 - point[i]));
-        cout << "lower[" << i << "] = " << lower[i] << endl;
-        cout << "upper[" << i << "] = " << upper[i] << endl;
     }
 }
 
 void Box::generateRandomNumbers(int dim) {
-    default_random_engine generator;
+    default_random_engine generator((int) time(0));
     double lowerBound = 0.0, upperBound = 0.0, randomNumber = 0.0;
     
     for (int i = 0; i < dim; i++) {
@@ -36,14 +35,16 @@ void Box::generateRandomNumbers(int dim) {
     }
 }
 
-void Box::outputData(ofstream & output, int dim){
+void Box::outputData(ofstream & output, int dim, char delimit){
+    // Output 3 points inside box
     for (int j = 0; j < 3; j++) {
-        output << makeLine(randomInside[j], dim) << '\n';
+        output << makeLine(randomInside[j], dim, delimit) << '\n';
     }
-    output << makeLine(randomOutside, dim) << '\n';
+    // Output 1 point inside unit hypercube, and outside box
+    output << makeLine(randomOutside, dim, delimit) << '\n';
 }
 
-string Box::makeLine(vector <double> data, int dim) {
+string Box::makeLine(vector <double> data, int dim, char delimit) {
     string line = "";
     ostringstream strs;
     string str;
@@ -51,7 +52,7 @@ string Box::makeLine(vector <double> data, int dim) {
         strs.str("");
         strs << data[j];
         str = strs.str();
-        line += str + '\t';
+        line += str + delimit;
     }
     return line;
 }
