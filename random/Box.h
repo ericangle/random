@@ -16,7 +16,8 @@ class Box {
 public:
     double volume;
     
-    // Fractional distance that the unit cube's vertices will be moved toward point
+    // Fractional distance that the unit cube's
+    // vertices will be moved toward point
     double fracDist;
     
     vector <double> point;
