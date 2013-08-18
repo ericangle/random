@@ -23,16 +23,30 @@ void Box::generateRandomNumbers(int dim) {
             randomNumber = distribution(generator);
             randomInside[k].push_back(randomNumber);
         }
-        
-        /*** 2BII. Generate 1 random point inside the unit hypercube, and outside the box ***/
-        uniform_real_distribution<double> distribution(0.0, 1.0 - (upperBound - lowerBound));
-        randomNumber = distribution(generator);
-        // If number is inside box, shift it
-        if (randomNumber > lowerBound) {
-            randomNumber += upperBound - lowerBound;
-        }
-        randomOutside.push_back(randomNumber);
     }
+    
+    /*** 2BII. Generate 1 random point inside the unit hypercube, and outside the box ***/
+    int numberCoordsIn;
+    vector <double> tempRandomOutside;
+    tempRandomOutside.resize(dim);
+    
+    do {
+        numberCoordsIn = 0;
+        // Generate point in unit hypercube
+        for (int i = 0; i < dim; i++) {
+            lowerBound = lower[i];
+            upperBound = upper[i];
+            uniform_real_distribution<double> distribution(0.0, 1.0);
+            randomNumber = distribution(generator);
+            tempRandomOutside[i] = randomNumber;
+            if ((randomNumber > lowerBound) && (randomNumber < upperBound)) {
+                numberCoordsIn++;
+            }
+        }
+    }
+    while (numberCoordsIn == dim);
+    
+    randomOutside = tempRandomOutside;
 }
 
 void Box::outputData(ofstream& output, int dim, char delimit){

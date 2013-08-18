@@ -26,8 +26,8 @@ int readInput(string inFilePath, vector <Box>& boxes, int& numBoxes, int& dim,
               double& invDim);
 
 int main() {
-    string inFilePath = "/Users/angle/Desktop/GS/random/random/input.txt";
-    string outFilePath = "/Users/angle/Desktop/GS/random/random/output.txt";
+    string inFilePath = "/Users/angle/Dropbox/Eric/Projects/random/random/input.txt";
+    string outFilePath = "/Users/angle/Dropbox/Eric/Projects/random/random/output.txt";
     
     int dim;            // number of spatial dimensions
     double invDim;      // 1/dim
