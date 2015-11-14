@@ -8,13 +8,7 @@ Problem Statement:
 
 * From a text file, read in the dimension of the space, and a series of points, each with a corresponding volume.
 
-* For each point:
-
-    * Construct a hypercube "box" around the point with the specifed volume, such that each vertex of the unit hypercube is moved the same fractional distance to the point.
-
-    * Generate:
-        * 3 random points inside the box.
-        * 1 random point inside the unit hypercube, and outside the box.
+* For each point, (1) Construct a hypercube "box" around the point with the specifed volume, such that each vertex of the unit hypercube is moved the same fractional distance to the point, and (2) generate (a) 3 random points inside the box, and (b) 1 random point inside the unit hypercube, and outside the box.
 
 * Output the coordinates of all generated points to a text file.
  
