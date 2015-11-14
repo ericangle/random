@@ -1,23 +1,3 @@
-/*  Problem statement:
- 1. From a text file, read in the dimension of the space, and a series of
-    points, each with a corresponding volume.
- 2. For each point:
-    A. Construct a hypercube "box" around the point with the specifed volume,
-       such that each vertex of the unit hypercube is moved the same fractional
-       distance to the point.
-    B. Generate:
-       I.  3 random points inside the box.
-       II. 1 random point inside the unit hypercube, and outside the box.
- 3. Output the coordinates of all generated points to a text file.
- 
- Some assumptions/simplifications made:
- 1. The input text file will be in tab delimited form.
- 2. Random numbers should be generated from a uniform distribution.
- 3. Volume is greater than 0 and less than 1.
- 4. Have hard coded 2BI and 2BII to generate 3 and 1 points, respectively.
-    Could make this more generic.
- */
-
 #include <math.h>
 #include "Box.h"
 using namespace std;
