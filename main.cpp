@@ -25,9 +25,20 @@ using namespace std;
 int readInput(string inFilePath, vector <Box>& boxes, int& numBoxes, int& dim,
               double& invDim);
 
-int main() {
-    string inFilePath = "/Users/angle/Dropbox/Eric/Projects/random/random/input.txt";
-    string outFilePath = "/Users/angle/Dropbox/Eric/Projects/random/random/output.txt";
+int main ( int argc, char *argv[] ) {
+
+    string inFilePath = argv[1];
+    string outFilePath = argv[2];
+
+    if (argc != 2 + 1) {
+       cout << "ERROR: Wrong number of command line arguments." << endl;
+       cout << "You provided " << argc << " expecting 2." << endl;
+       return 1;
+    }
+    else {
+       inFilePath = argv[1];
+       outFilePath = argv[2];
+    }
     
     int dim;            // number of spatial dimensions
     double invDim;      // 1/dim
@@ -82,7 +93,7 @@ int readInput(string inFilePath, vector <Box>& boxes, int& numBoxes, int& dim,
             }
             // Error if invalid dimension
             else {
-                cout << "ERROR: Dimension must be greater than 0.";
+                cout << "ERROR: Dimension must be greater than 0." << endl;
                 return 1;
             }
         }
@@ -136,8 +147,9 @@ int readInput(string inFilePath, vector <Box>& boxes, int& numBoxes, int& dim,
             
             // Error if not enough coordinates for point
             if (coordCount < dim) {
-                cout << "ERROR: Point " << numBoxes << " has " << coordCount;
-                cout << " coordinates instead of " << dim << ".";
+                cout << "ERROR: Point " << numBoxes << " has " << coordCount
+                     << " coordinates instead of " << dim << "."
+                     << endl;
                 return 1;
             }
             
