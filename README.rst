@@ -10,11 +10,11 @@ Problem Statement:
 
 * For each point:
 
-	* Construct a hypercube "box" around the point with the specifed volume, such that each vertex of the unit hypercube is moved the same fractional distance to the point.
+    * Construct a hypercube "box" around the point with the specifed volume, such that each vertex of the unit hypercube is moved the same fractional distance to the point.
 
-	* Generate:
-		* 3 random points inside the box.
-		* 1 random point inside the unit hypercube, and outside the box.
+    * Generate:
+        * 3 random points inside the box.
+        * 1 random point inside the unit hypercube, and outside the box.
 
 * Output the coordinates of all generated points to a text file.
  
